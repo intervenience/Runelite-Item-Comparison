@@ -55,7 +55,6 @@ public class ComparisonPanel extends PluginPanel {
     @Inject
     public ComparisonPanel (ComparisonPlugin comparisonPlugin) throws Exception {
         super ();
-        System.out.println("Search for this");
         this.comparisonPlugin = comparisonPlugin;
 
         setBorder (new EmptyBorder(10,10,10,10));
@@ -72,19 +71,22 @@ public class ComparisonPanel extends PluginPanel {
         add (title, c);
         c.gridy++;
 
+        //first search bar
         search1 = new IconTextField();
         initialiseSearchBars(search1, 0);
         add (search1, c);
         c.gridy++;
+
+        //second search bar
         search2 = new IconTextField();
         initialiseSearchBars(search2, 1);
-
         add (search2, c);
         c.gridy++;
 
         tabGroup = new MaterialTabGroup();
         tabGroup.setLayout(new GridLayout(0,3,5,2));
 
+        //Create our table of left stat textfields, the stat icon, and right stat textfields
         for (Map.Entry<String, ImageIcon> icon : imageIcons.entrySet()) {
             MaterialTab leftTab = new MaterialTab ("-", tabGroup, null);
             leftTab.removeMouseListener(leftTab.getMouseListeners()[1]);
@@ -114,13 +116,23 @@ public class ComparisonPanel extends PluginPanel {
         textField.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         textField.setMinimumSize(new Dimension (0,30));
         textField.addActionListener(e -> lookup (textField, id));
-        textField.addClearListener(clear (textField));
+        textField.addClearListener(() -> {
+            textField.setIcon(IconTextField.Icon.SEARCH);
+            switch (id) {
+                case 0:
+                    for (int i = 0; i < leftMaterialTabs.size(); i++) {
+                        leftMaterialTabs.get(i).setText ("-");
+                    }
+                    break;
+                case 1:
+                    for (int i = 0; i < rightMaterialTabs.size(); i++) {
+                        rightMaterialTabs.get(i).setText ("-");
+                    }
+                    break;
+            }
+            compareStats();
+        });
         textField.setIcon(IconTextField.Icon.SEARCH);
-    }
-
-    private Runnable clear (IconTextField textField) {
-        textField.setIcon(IconTextField.Icon.SEARCH);
-        return null;
     }
 
     private void lookup (IconTextField textField, int id) {

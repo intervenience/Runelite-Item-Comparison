@@ -7,7 +7,7 @@ public class ComparisonTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(ComparisonTest.class);
+		ExternalPluginManager.loadBuiltin(ComparisonPlugin.class);
 		RuneLite.main(args);
 	}
 }

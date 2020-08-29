@@ -76,6 +76,7 @@ public class ComparisonPlugin extends Plugin {
         "mdmg = ",
         "prayer = ");
 
+    //our sidebar button
     private NavigationButton navButton;
 
     @Override
@@ -123,14 +124,17 @@ public class ComparisonPlugin extends Plugin {
                         try {
                             JsonParser parser = new JsonParser();
                             JsonObject json = (JsonObject) parser.parse (line);
-                            // returns null if this does not exist.
+                            //the json parser returns null if this does not exist.
                             if (json.get ("error") == null) {
+                                //subJson is the json child object of "parse", from our API query
                                 JsonObject subJson = (JsonObject) parser.parse (json.get ("parse").toString());
+
+                                //wikitext is the page contents
                                 String wikitext = subJson.get ("wikitext").toString();
                                 if (wikitext.startsWith("\"#REDIRECT")) {
                                     searchForItem(wikitext.replace ("\"#REDIRECT [[", "").replace ("]]\"", ""), id);
                                 } else {
-                                    //try to find the bonuses
+                                    //page title
                                     String title = subJson.get ("title").toString().replace ("\"", "");
                                     //System.out.println(wikitext);
 
@@ -140,7 +144,7 @@ public class ComparisonPlugin extends Plugin {
                                         for (int i = 0; i < searchStrings.size(); i++) {
                                             String searchTerm = searchStrings.get(i);
                                             boolean trim = false;
-                                            System.out.println ("Search term = " + searchTerm);
+                                            //System.out.println ("Search term = " + searchTerm);
 
                                             //pages that contain multiple degradation's (barrows/blowpipe/etc), will return -1 here
                                             if (trim = wikitext.indexOf (searchStrings.get(i)) == -1) {
@@ -215,7 +219,7 @@ public class ComparisonPlugin extends Plugin {
             }
         };
 
-        //We actually start the above here, so we don't block user inputs
+        //We actually start the above Runnable here, so we don't block user inputs
         Thread t = new Thread (runnable, "");
         t.start();
 
